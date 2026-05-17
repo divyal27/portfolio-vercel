@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { FiExternalLink, FiGithub, FiStar, FiGitBranch, FiSearch } from "react-icons/fi"
+import { FiExternalLink, FiGithub, FiStar, FiGitBranch, FiSearch, FiChevronDown } from "react-icons/fi"
 import { getRepos, Repo } from "@/data/repos"
 
 const LANG_COLORS: Record<string, string> = {
@@ -101,15 +101,15 @@ export default function Projects() {
           {filtered.map((repo) => (
             <div
               key={repo.id}
-              className="glass p-5 flex flex-col group cursor-pointer"
-              onClick={() => setExpanded(expanded === repo.id ? null : repo.id)}
+              className="glass p-5 flex flex-col group cursor-pointer glass-hover"
+              onClick={() => window.open(repo.html_url, "_blank", "noopener noreferrer")}
             >
               <div className="flex items-start justify-between mb-3">
                 <div className="flex items-center gap-2">
                   <div className={`w-3 h-3 rounded-full ${getLangColor(repo.language)}`} />
                   <span className="text-xs text-slate font-mono">{repo.language || "N/A"}</span>
                 </div>
-                <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                <div className="flex gap-2">
                   <a
                     href={repo.html_url}
                     target="_blank"
@@ -143,23 +143,31 @@ export default function Projects() {
                 {repo.description}
               </p>
 
-              {repo.topics.length > 0 && (
-                <div className="flex flex-wrap gap-1.5 mb-3">
-                  {repo.topics.slice(0, expanded === repo.id ? repo.topics.length : 3).map((topic) => (
-                    <span
-                      key={topic}
-                      className="px-2 py-0.5 bg-primary/10 text-primary text-[10px] rounded-full font-mono"
-                    >
-                      {topic}
-                    </span>
-                  ))}
-                  {repo.topics.length > 3 && expanded !== repo.id && (
-                    <span className="text-[10px] text-slate font-mono">
-                      +{repo.topics.length - 3}
-                    </span>
-                  )}
-                </div>
-              )}
+              <div className="flex flex-wrap gap-1.5 mb-3">
+                {repo.topics.slice(0, expanded === repo.id ? repo.topics.length : 3).map((topic) => (
+                  <span
+                    key={topic}
+                    className="px-2 py-0.5 bg-primary/10 text-primary text-[10px] rounded-full font-mono"
+                  >
+                    {topic}
+                  </span>
+                ))}
+                {repo.topics.length > 3 && (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      setExpanded(expanded === repo.id ? null : repo.id)
+                    }}
+                    className="flex items-center gap-0.5 text-[10px] text-slate font-mono hover:text-primary transition-colors"
+                  >
+                    {expanded === repo.id ? "less" : `+${repo.topics.length - 3}`}
+                    <FiChevronDown
+                      size={10}
+                      className={`transition-transform ${expanded === repo.id ? "rotate-180" : ""}`}
+                    />
+                  </button>
+                )}
+              </div>
 
               <div className="flex items-center gap-4 text-xs text-slate mt-auto pt-3 border-t border-white/5">
                 <span className="flex items-center gap-1">

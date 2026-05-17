@@ -2,8 +2,9 @@
 
 import { useEffect, useRef } from "react"
 import { FiArrowDown, FiGithub, FiLinkedin, FiMail } from "react-icons/fi"
+import Image from "next/image"
 
-function ParticleCanvas() {
+function PipelineCanvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
   useEffect(() => {
@@ -13,7 +14,35 @@ function ParticleCanvas() {
     if (!ctx) return
 
     let animId: number
-    let particles: { x: number; y: number; dx: number; dy: number; size: number }[] = []
+
+    interface Stage {
+      x: number
+      y: number
+      label: string
+    }
+
+    interface Commit {
+      x: number
+      y: number
+      progress: number
+      speed: number
+      stage: number
+    }
+
+    const stages: Stage[] = [
+      { x: 0, y: 0, label: "Code" },
+      { x: 0, y: 0, label: "Build" },
+      { x: 0, y: 0, label: "Test" },
+      { x: 0, y: 0, label: "Deploy" },
+    ]
+
+    const commits: Commit[] = Array.from({ length: 4 }, () => ({
+      x: 0,
+      y: 0,
+      progress: Math.random(),
+      speed: 0.002 + Math.random() * 0.003,
+      stage: 0,
+    }))
 
     const resize = () => {
       canvas.width = window.innerWidth
@@ -22,45 +51,74 @@ function ParticleCanvas() {
     resize()
     window.addEventListener("resize", resize)
 
-    for (let i = 0; i < 60; i++) {
-      particles.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        dx: (Math.random() - 0.5) * 0.5,
-        dy: (Math.random() - 0.5) * 0.5,
-        size: Math.random() * 2 + 0.5,
-      })
-    }
-
     const draw = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height)
-      ctx.fillStyle = "rgba(0, 245, 212, 0.6)"
 
-      for (const p of particles) {
-        p.x += p.dx
-        p.y += p.dy
-        if (p.x < 0 || p.x > canvas.width) p.dx *= -1
-        if (p.y < 0 || p.y > canvas.height) p.dy *= -1
+      const w = canvas.width
+      const h = canvas.height
+      const startX = w * 0.05
+      const endX = w * 0.95
+      const pipelineY = h * 0.15
+      const stageSpacing = (endX - startX) / (stages.length - 1)
+
+      stages.forEach((s, i) => {
+        s.x = startX + i * stageSpacing
+        s.y = pipelineY
+      })
+
+      for (let i = 0; i < stages.length - 1; i++) {
+        const gradient = ctx.createLinearGradient(
+          stages[i].x, stages[i].y, stages[i + 1].x, stages[i + 1].y
+        )
+        gradient.addColorStop(0, "rgba(0, 245, 212, 0.15)")
+        gradient.addColorStop(0.5, "rgba(0, 245, 212, 0.4)")
+        gradient.addColorStop(1, "rgba(0, 245, 212, 0.15)")
+
         ctx.beginPath()
-        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2)
-        ctx.fill()
+        ctx.moveTo(stages[i].x, stages[i].y - 1)
+        ctx.lineTo(stages[i + 1].x, stages[i + 1].y - 1)
+        ctx.strokeStyle = gradient
+        ctx.lineWidth = 2
+        ctx.stroke()
       }
 
-      for (let i = 0; i < particles.length; i++) {
-        for (let j = i + 1; j < particles.length; j++) {
-          const dx = particles[i].x - particles[j].x
-          const dy = particles[i].y - particles[j].y
-          const dist = Math.sqrt(dx * dx + dy * dy)
-          if (dist < 120) {
-            ctx.strokeStyle = `rgba(0, 245, 212, ${0.1 * (1 - dist / 120)})`
-            ctx.lineWidth = 0.5
-            ctx.beginPath()
-            ctx.moveTo(particles[i].x, particles[i].y)
-            ctx.lineTo(particles[j].x, particles[j].y)
-            ctx.stroke()
-          }
+      stages.forEach((s) => {
+        ctx.beginPath()
+        ctx.arc(s.x, s.y, 5, 0, Math.PI * 2)
+        ctx.fillStyle = "rgba(0, 245, 212, 0.3)"
+        ctx.fill()
+        ctx.strokeStyle = "rgba(0, 245, 212, 0.6)"
+        ctx.lineWidth = 1
+        ctx.stroke()
+      })
+
+      commits.forEach((c) => {
+        c.progress += c.speed
+        if (c.progress > 1) {
+          c.progress = 0
         }
-      }
+
+        const totalDist = stages.length - 1
+        const pos = c.progress * totalDist
+        const stageIdx = Math.min(Math.floor(pos), totalDist - 1)
+        const t = pos - stageIdx
+
+        const sx = stages[stageIdx].x + (stages[stageIdx + 1]?.x - stages[stageIdx]?.x || 0) * t
+        const sy = stages[stageIdx].y + (stages[stageIdx + 1]?.y - stages[stageIdx]?.y || 0) * t
+
+        const glow = ctx.createRadialGradient(sx, sy, 0, sx, sy, 8)
+        glow.addColorStop(0, "rgba(0, 245, 212, 0.8)")
+        glow.addColorStop(1, "rgba(0, 245, 212, 0)")
+        ctx.fillStyle = glow
+        ctx.beginPath()
+        ctx.arc(sx, sy, 8, 0, Math.PI * 2)
+        ctx.fill()
+
+        ctx.beginPath()
+        ctx.arc(sx, sy, 2.5, 0, Math.PI * 2)
+        ctx.fillStyle = "#00F5D4"
+        ctx.fill()
+      })
 
       animId = requestAnimationFrame(draw)
     }
@@ -72,7 +130,7 @@ function ParticleCanvas() {
     }
   }, [])
 
-  return <canvas ref={canvasRef} className="absolute inset-0 pointer-events-none" />
+  return <canvas ref={canvasRef} className="absolute inset-0 pointer-events-none opacity-40" />
 }
 
 export default function Hero() {
@@ -81,18 +139,43 @@ export default function Hero() {
       id="home"
       className="relative min-h-screen flex items-center justify-center overflow-hidden"
     >
-      <ParticleCanvas />
+      <PipelineCanvas />
 
       <div className="relative z-10 text-center px-4 max-w-4xl">
-        <p className="text-primary font-mono text-sm md:text-lg mb-4 tracking-widest">
+        <div className="flex justify-center mb-6">
+          <div className="relative w-28 h-28 md:w-36 md:h-36 rounded-full overflow-hidden border-2 border-primary/30 ring-2 ring-primary/10 animate-glow">
+            <Image
+              src="https://avatars.githubusercontent.com/u/206107207?v=4"
+              alt="Divyal Padalkar"
+              fill
+              className="object-cover"
+              priority
+            />
+          </div>
+        </div>
+
+        <p className="text-primary font-mono text-sm md:text-lg mb-3 tracking-widest">
           Hi, my name is
         </p>
-        <h1 className="text-4xl md:text-7xl font-bold text-light mb-4">
+        <h1 className="text-4xl md:text-7xl font-bold text-light mb-3">
           Divyal Padalkar
         </h1>
-        <h2 className="text-2xl md:text-5xl font-bold text-slate mb-6">
+        <h2 className="text-2xl md:text-5xl font-bold text-slate mb-5">
           DevOps &amp; SRE Engineer
         </h2>
+
+        <div className="flex justify-center gap-3 mb-4">
+          <span className="px-3 py-1 bg-primary/10 text-primary text-xs font-mono rounded-full border border-primary/20">
+            #CI/CD
+          </span>
+          <span className="px-3 py-1 bg-primary/10 text-primary text-xs font-mono rounded-full border border-primary/20">
+            #Kubernetes
+          </span>
+          <span className="px-3 py-1 bg-primary/10 text-primary text-xs font-mono rounded-full border border-primary/20">
+            #IaC
+          </span>
+        </div>
+
         <p className="text-slate text-base md:text-lg max-w-2xl mx-auto mb-8 leading-relaxed">
           Building scalable, reliable, and automated cloud systems using
           Kubernetes, Terraform, and CI/CD pipelines. Passionate about
@@ -125,7 +208,7 @@ export default function Hero() {
             <FiGithub />
           </a>
           <a
-            href="https://linkedin.com/in/divyal-padalkar"
+            href="https://linkedin.com/in/divyal-padalkar2704"
             target="_blank"
             rel="noopener noreferrer"
             className="hover:text-primary transition-colors text-2xl"
@@ -150,6 +233,10 @@ export default function Hero() {
       >
         <FiArrowDown size={24} />
       </a>
+
+      <div className="absolute bottom-4 left-4 text-[10px] text-slate/30 font-mono hidden md:block">
+        ──[ pipeline: continuous integration ]─────────────────────────────────────
+      </div>
     </section>
   )
 }
