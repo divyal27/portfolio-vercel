@@ -1,5 +1,5 @@
-import Navbar from "@/components/Navbar"
-import Hero from "@/components/Hero"
+import SpotlightNavbar from "@/components/ui/spotlight-navbar"
+import AnimatedHero from "@/components/ui/animated-hero"
 import Projects from "@/components/Projects"
 import Skills from "@/components/Skills"
 import CICDPipeline from "@/components/CICDPipeline"
@@ -10,9 +10,9 @@ import Footer from "@/components/Footer"
 export default function Home() {
   return (
     <>
-      <Navbar />
+      <SpotlightNavbar />
       <main>
-        <Hero />
+        <AnimatedHero />
         <Projects />
         <Skills />
         <CICDPipeline />

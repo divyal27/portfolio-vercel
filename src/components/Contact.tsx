@@ -1,7 +1,9 @@
 "use client"
 
-import { useState, useRef } from "react"
+import { useRef } from "react"
 import { FiSend, FiMail, FiMapPin, FiGithub, FiLinkedin } from "react-icons/fi"
+import { GlowBorderCard } from "@/components/ui/glow-border-card"
+import { AnimatedButton } from "@/components/ui/animated-button"
 
 export default function Contact() {
   const formRef = useRef<HTMLFormElement>(null)
@@ -30,7 +32,7 @@ export default function Contact() {
         <p className="text-slate mb-10">Let&apos;s build something together</p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <div className="glass p-8">
+          <GlowBorderCard className="p-8" mouseFollow={false}>
             <form ref={formRef} onSubmit={handleSubmit} className="space-y-5">
               <div>
                 <label className="text-sm text-slate mb-1 block">Name</label>
@@ -62,18 +64,14 @@ export default function Contact() {
                   placeholder="Your message..."
                 />
               </div>
-              <button
-                type="submit"
-                className="flex items-center gap-2 px-6 py-3 bg-primary text-dark font-semibold rounded-lg hover:bg-primary/90 transition-all font-mono text-sm"
-              >
+              <AnimatedButton as="button" type="submit" variant="primary" icon={<FiSend size={16} />}>
                 Send Message
-                <FiSend size={16} />
-              </button>
+              </AnimatedButton>
             </form>
-          </div>
+          </GlowBorderCard>
 
           <div className="space-y-6">
-            <div className="glass p-6 flex items-center gap-4">
+            <GlowBorderCard className="p-6 flex items-center gap-4" mouseFollow={false}>
               <FiMail className="text-primary shrink-0" size={20} />
               <div>
                 <p className="text-sm text-slate">Email</p>
@@ -84,17 +82,17 @@ export default function Contact() {
                   888divyal.3@gmail.com
                 </a>
               </div>
-            </div>
+            </GlowBorderCard>
 
-            <div className="glass p-6 flex items-center gap-4">
+            <GlowBorderCard className="p-6 flex items-center gap-4" mouseFollow={false}>
               <FiMapPin className="text-primary shrink-0" size={20} />
               <div>
                 <p className="text-sm text-slate">Location</p>
                 <p className="text-light">Pune, India</p>
               </div>
-            </div>
+            </GlowBorderCard>
 
-            <div className="glass p-6">
+            <GlowBorderCard className="p-6" mouseFollow={false}>
               <p className="text-sm text-slate mb-3">Social</p>
               <div className="flex gap-4">
                 <a
@@ -114,7 +112,7 @@ export default function Contact() {
                   <FiLinkedin size={18} /> LinkedIn
                 </a>
               </div>
-            </div>
+            </GlowBorderCard>
           </div>
         </div>
       </div>

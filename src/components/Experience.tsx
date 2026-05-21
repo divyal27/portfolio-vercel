@@ -2,6 +2,8 @@
 
 import { useState } from "react"
 import { FiBriefcase, FiCalendar, FiChevronDown } from "react-icons/fi"
+import { GlowBorderCard } from "@/components/ui/glow-border-card"
+import { cn } from "@/lib/utils"
 
 const experiences = [
   {
@@ -47,19 +49,20 @@ export default function Experience() {
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
           {impactMetrics.map((m) => (
-            <div key={m.label} className="glass p-4 text-center">
+            <GlowBorderCard key={m.label} className="p-4 text-center" mouseFollow={false}>
               <div className="text-2xl md:text-3xl font-bold text-primary mb-1">{m.value}</div>
               <div className="text-sm font-semibold text-light">{m.label}</div>
               <div className="text-xs text-slate mt-1">{m.desc}</div>
-            </div>
+            </GlowBorderCard>
           ))}
         </div>
 
         <div className="space-y-4">
           {experiences.map((exp, idx) => (
-            <div
+            <GlowBorderCard
               key={idx}
-              className="glass overflow-hidden transition-all duration-300"
+              className="overflow-hidden transition-all duration-300"
+              mouseFollow={false}
             >
               <button
                 className="w-full p-5 flex items-center justify-between text-left"
@@ -77,17 +80,19 @@ export default function Experience() {
                     <FiCalendar size={12} /> {exp.period}
                   </span>
                   <FiChevronDown
-                    className={`text-slate transition-transform ${
-                      openIdx === idx ? "rotate-180" : ""
-                    }`}
+                    className={cn(
+                      "text-slate transition-transform duration-300",
+                      openIdx === idx && "rotate-180",
+                    )}
                   />
                 </div>
               </button>
 
               <div
-                className={`transition-all duration-300 ${
-                  openIdx === idx ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
-                }`}
+                className={cn(
+                  "transition-all duration-300 overflow-hidden",
+                  openIdx === idx ? "max-h-96 opacity-100" : "max-h-0 opacity-0",
+                )}
               >
                 <ul className="px-5 pb-5 space-y-2">
                   {exp.description.map((item, i) => (
@@ -98,7 +103,7 @@ export default function Experience() {
                   ))}
                 </ul>
               </div>
-            </div>
+            </GlowBorderCard>
           ))}
         </div>
       </div>

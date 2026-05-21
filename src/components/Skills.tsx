@@ -17,6 +17,8 @@ import {
   SiGooglecloud,
 } from "react-icons/si"
 import { FaAws, FaMicrosoft } from "react-icons/fa"
+import { GlowBorderCard } from "@/components/ui/glow-border-card"
+import { cn } from "@/lib/utils"
 
 interface SkillCategory {
   title: string
@@ -93,11 +95,9 @@ export default function Skills() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {skillData.map((cat, idx) => (
-            <div
+            <GlowBorderCard
               key={cat.title}
-              className={`glass p-6 transition-all duration-300 ${
-                active === idx ? "glow-border" : ""
-              }`}
+              className={cn("p-6", active === idx && "glow-border")}
               onMouseEnter={() => setActive(idx)}
             >
               <div className="flex items-center gap-3 mb-5">
@@ -117,14 +117,14 @@ export default function Skills() {
                     </div>
                     <div className="h-1.5 bg-white/5 rounded-full overflow-hidden">
                       <div
-                        className="h-full bg-gradient-to-r from-primary to-cyan-400 rounded-full transition-all duration-1000"
+                        className="h-full bg-gradient-to-r from-primary to-cyan-400 rounded-full transition-all duration-1000 ease-out"
                         style={{ width: `${skill.level}%` }}
                       />
                     </div>
                   </div>
                 ))}
               </div>
-            </div>
+            </GlowBorderCard>
           ))}
         </div>
       </div>

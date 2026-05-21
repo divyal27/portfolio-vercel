@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useRef } from "react"
+import { GlowBorderCard } from "@/components/ui/glow-border-card"
 
 const PIPELINE_STAGES = [
   { id: 1, label: "Code", icon: "📝", status: "passed" },
@@ -32,7 +33,7 @@ export default function CICDPipeline() {
         </h2>
         <p className="text-slate mb-10">Continuous Integration &amp; Deployment workflow</p>
 
-        <div className="glass p-6 md:p-8">
+        <GlowBorderCard className="p-6 md:p-8" mouseFollow={false}>
           <div className="flex items-center gap-2 mb-6">
             <div className="w-3 h-3 rounded-full bg-red-500" />
             <div className="w-3 h-3 rounded-full bg-yellow-500" />
@@ -107,7 +108,7 @@ export default function CICDPipeline() {
             <span className="text-slate/50">|</span>
             <span className="text-green-400">status: successful</span>
           </div>
-        </div>
+        </GlowBorderCard>
       </div>
     </section>
   )

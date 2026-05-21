@@ -21,6 +21,53 @@
   .glow-border {
     @apply border border-primary/20 shadow-[0_0_15px_rgba(0,245,212,0.1)];
   }
+  .animate-in {
+    animation: animateIn 0.2s ease-out;
+  }
+  .fade-in {
+    animation: fadeIn 0.2s ease-out;
+  }
+  .slide-up {
+    animation: slideUp 0.4s ease-out;
+  }
+  .scale-in {
+    animation: scaleIn 0.3s ease-out;
+  }
+  .shimmer {
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(0, 245, 212, 0.08) 50%,
+      transparent 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 2s infinite;
+  }
+}
+
+@keyframes animateIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
 }
 
 ::-webkit-scrollbar {
@@ -32,6 +79,9 @@
 ::-webkit-scrollbar-thumb {
   background: #00F5D4;
   border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #00d4b8;
 }
 
 ::selection {

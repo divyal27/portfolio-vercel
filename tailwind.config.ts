@@ -20,6 +20,7 @@ const config: Config = {
         float: "float 6s ease-in-out infinite",
         glow: "glow 2s ease-in-out infinite alternate",
         "spin-slow": "spin 8s linear infinite",
+        "pulse-glow": "pulseGlow 2s ease-in-out infinite alternate",
       },
       keyframes: {
         float: {
@@ -29,6 +30,10 @@ const config: Config = {
         glow: {
           "0%": { boxShadow: "0 0 5px rgba(0,245,212,0.2)" },
           "100%": { boxShadow: "0 0 30px rgba(0,245,212,0.6)" },
+        },
+        pulseGlow: {
+          "0%": { boxShadow: "0 0 10px rgba(0,245,212,0.2), 0 0 20px rgba(0,245,212,0.1)" },
+          "100%": { boxShadow: "0 0 20px rgba(0,245,212,0.4), 0 0 40px rgba(0,245,212,0.2)" },
         },
       },
     },

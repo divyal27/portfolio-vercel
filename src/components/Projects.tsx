@@ -3,6 +3,9 @@
 import { useState, useEffect } from "react"
 import { FiExternalLink, FiGithub, FiStar, FiGitBranch, FiSearch, FiChevronDown } from "react-icons/fi"
 import { getRepos, Repo } from "@/data/repos"
+import { GlowBorderCard } from "@/components/ui/glow-border-card"
+import { AnimatedButton } from "@/components/ui/animated-button"
+import { cn } from "@/lib/utils"
 
 const LANG_COLORS: Record<string, string> = {
   JavaScript: "bg-yellow-400",
@@ -71,42 +74,38 @@ export default function Projects() {
             />
           </div>
           <div className="flex gap-2 flex-wrap">
-            <button
+            <AnimatedButton
+              as="button"
+              variant={selectedLang === "all" ? "primary" : "ghost"}
+              size="sm"
               onClick={() => setSelectedLang("all")}
-              className={`px-3 py-1.5 rounded-lg text-xs font-mono transition-all ${
-                selectedLang === "all"
-                  ? "bg-primary text-dark"
-                  : "bg-white/5 text-slate hover:bg-white/10"
-              }`}
             >
               All
-            </button>
+            </AnimatedButton>
             {languages.map((lang) => (
-              <button
+              <AnimatedButton
                 key={lang}
+                as="button"
+                variant={selectedLang === lang ? "primary" : "ghost"}
+                size="sm"
                 onClick={() => setSelectedLang(lang)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-mono transition-all ${
-                  selectedLang === lang
-                    ? "bg-primary text-dark"
-                    : "bg-white/5 text-slate hover:bg-white/10"
-                }`}
               >
                 {lang}
-              </button>
+              </AnimatedButton>
             ))}
           </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {filtered.map((repo) => (
-            <div
+            <GlowBorderCard
               key={repo.id}
-              className="glass p-5 flex flex-col group cursor-pointer glass-hover"
+              className="p-5 flex flex-col cursor-pointer"
               onClick={() => window.open(repo.html_url, "_blank", "noopener noreferrer")}
             >
               <div className="flex items-start justify-between mb-3">
                 <div className="flex items-center gap-2">
-                  <div className={`w-3 h-3 rounded-full ${getLangColor(repo.language)}`} />
+                  <div className={cn("w-3 h-3 rounded-full", getLangColor(repo.language))} />
                   <span className="text-xs text-slate font-mono">{repo.language || "N/A"}</span>
                 </div>
                 <div className="flex gap-2">
@@ -163,7 +162,7 @@ export default function Projects() {
                     {expanded === repo.id ? "less" : `+${repo.topics.length - 3}`}
                     <FiChevronDown
                       size={10}
-                      className={`transition-transform ${expanded === repo.id ? "rotate-180" : ""}`}
+                      className={cn("transition-transform", expanded === repo.id && "rotate-180")}
                     />
                   </button>
                 )}
@@ -178,7 +177,7 @@ export default function Projects() {
                 </span>
                 <span className="font-mono">{repo.updated_at?.slice(0, 10)}</span>
               </div>
-            </div>
+            </GlowBorderCard>
           ))}
         </div>
 
