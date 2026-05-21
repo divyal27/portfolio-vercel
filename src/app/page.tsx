@@ -1,5 +1,6 @@
 import SpotlightNavbar from "@/components/ui/spotlight-navbar"
-import AnimatedHero from "@/components/ui/animated-hero"
+import Hero from "@/components/Hero"
+import LogoSlider from "@/components/ui/LogoSlider"
 import Projects from "@/components/Projects"
 import Skills from "@/components/Skills"
 import CICDPipeline from "@/components/CICDPipeline"
@@ -12,7 +13,8 @@ export default function Home() {
     <>
       <SpotlightNavbar />
       <main>
-        <AnimatedHero />
+        <Hero />
+        <LogoSlider />
         <Projects />
         <Skills />
         <CICDPipeline />

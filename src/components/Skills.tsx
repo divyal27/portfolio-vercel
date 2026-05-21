@@ -1,35 +1,22 @@
 "use client"
 
 import { useState } from "react"
-import {
-  SiDocker,
-  SiKubernetes,
-  SiTerraform,
-  SiJenkins,
-  SiGithubactions,
-  SiPrometheus,
-  SiGrafana,
-  SiAnsible,
-  SiArgo,
-  SiElasticsearch,
-  SiSonarqubeserver,
-  SiPython,
-  SiGooglecloud,
-} from "react-icons/si"
-import { FaAws, FaMicrosoft } from "react-icons/fa"
-import { GlowBorderCard } from "@/components/ui/glow-border-card"
-import { cn } from "@/lib/utils"
+import { SiDocker, SiKubernetes, SiTerraform, SiJenkins, SiGithubactions, SiPrometheus, SiGrafana, SiAnsible, SiArgo, SiElasticsearch, SiSonarqubeserver, SiPython, SiGooglecloud } from "react-icons/si"
+import { FaMicrosoft, FaAws } from "react-icons/fa"
+import { TbServerBolt } from "react-icons/tb"
+import CountUp from "@/components/ui/CountUp"
+import FadeContent from "@/components/ui/FadeContent"
 
 interface SkillCategory {
   title: string
-  icon: string
+  icon: React.ReactNode
   skills: { name: string; icon: React.ReactNode; level: number }[]
 }
 
 const skillData: SkillCategory[] = [
   {
     title: "Cloud Platforms",
-    icon: "☁️",
+    icon: <FaAws />,
     skills: [
       { name: "AWS", icon: <FaAws />, level: 90 },
       { name: "GCP", icon: <SiGooglecloud />, level: 75 },
@@ -38,16 +25,16 @@ const skillData: SkillCategory[] = [
   },
   {
     title: "Containers & Orchestration",
-    icon: "📦",
+    icon: <SiDocker />,
     skills: [
       { name: "Docker", icon: <SiDocker />, level: 92 },
       { name: "Kubernetes", icon: <SiKubernetes />, level: 88 },
-      { name: "Helm", icon: <SiKubernetes />, level: 75 },
+      { name: "Helm", icon: <TbServerBolt />, level: 75 },
     ],
   },
   {
     title: "CI/CD",
-    icon: "🔄",
+    icon: <SiGithubactions />,
     skills: [
       { name: "GitHub Actions", icon: <SiGithubactions />, level: 90 },
       { name: "Jenkins", icon: <SiJenkins />, level: 85 },
@@ -56,7 +43,7 @@ const skillData: SkillCategory[] = [
   },
   {
     title: "Infrastructure as Code",
-    icon: "🏗️",
+    icon: <SiTerraform />,
     skills: [
       { name: "Terraform", icon: <SiTerraform />, level: 88 },
       { name: "Ansible", icon: <SiAnsible />, level: 82 },
@@ -64,7 +51,7 @@ const skillData: SkillCategory[] = [
   },
   {
     title: "Monitoring & Observability",
-    icon: "📊",
+    icon: <SiPrometheus />,
     skills: [
       { name: "Prometheus", icon: <SiPrometheus />, level: 85 },
       { name: "Grafana", icon: <SiGrafana />, level: 85 },
@@ -73,7 +60,7 @@ const skillData: SkillCategory[] = [
   },
   {
     title: "Security & Languages",
-    icon: "🔒",
+    icon: <SiPython />,
     skills: [
       { name: "Trivy", icon: <SiSonarqubeserver />, level: 80 },
       { name: "SonarQube", icon: <SiSonarqubeserver />, level: 75 },
@@ -86,45 +73,52 @@ export default function Skills() {
   const [active, setActive] = useState<number>(0)
 
   return (
-    <section id="skills" className="py-20 px-4 bg-secondary/50">
+    <section id="skills" className="py-20 px-4 bg-[#F7F6F2]">
       <div className="max-w-6xl mx-auto">
-        <h2 className="text-3xl md:text-4xl font-bold text-light mb-2">
-          <span className="text-primary font-mono">&gt;</span> Tech Stack
-        </h2>
-        <p className="text-slate mb-10">Technologies I work with daily</p>
+        <FadeContent blur={true} duration={800} ease="ease-out">
+          <h2 className="text-3xl md:text-4xl font-display font-bold text-[#1A1A1A] mb-2">
+            Tech Stack
+          </h2>
+          <div className="w-20 h-1 bg-[#01696F] rounded mb-4" />
+          <p className="text-[#6B7280] mb-10">Technologies I work with daily</p>
+        </FadeContent>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {skillData.map((cat, idx) => (
-            <GlowBorderCard
-              key={cat.title}
-              className={cn("p-6", active === idx && "glow-border")}
-              onMouseEnter={() => setActive(idx)}
-            >
-              <div className="flex items-center gap-3 mb-5">
-                <span className="text-2xl">{cat.icon}</span>
-                <h3 className="text-light font-semibold">{cat.title}</h3>
-              </div>
+            <FadeContent key={cat.title} blur={true} duration={800} ease="ease-out" delay={idx * 100}>
+              <div
+                className="card p-6"
+                onMouseEnter={() => setActive(idx)}
+              >
+                <div className="flex items-center gap-3 mb-5">
+                  <span className="text-2xl text-[#01696F]">{cat.icon}</span>
+                  <h3 className="text-[#1A1A1A] font-display font-semibold">{cat.title}</h3>
+                </div>
 
-              <div className="space-y-4">
-                {cat.skills.map((skill) => (
-                  <div key={skill.name}>
-                    <div className="flex items-center justify-between mb-1.5">
-                      <div className="flex items-center gap-2 text-sm text-slate">
-                        <span className="text-primary">{skill.icon}</span>
-                        <span>{skill.name}</span>
+                <div className="space-y-4">
+                  {cat.skills.map((skill) => (
+                    <div key={skill.name}>
+                      <div className="flex items-center justify-between mb-1.5">
+                        <div className="flex items-center gap-2 text-sm text-[#6B7280]">
+                          <span className="text-[#01696F]">{skill.icon}</span>
+                          <span>{skill.name}</span>
+                        </div>
+                        <span className="text-xs text-[#6B7280] font-mono">
+                          <CountUp to={skill.level} from={0} duration={2} startWhen={true} />
+                          %
+                        </span>
                       </div>
-                      <span className="text-xs text-slate font-mono">{skill.level}%</span>
+                      <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+                        <div
+                          className="h-full bg-[#01696F] rounded-full transition-all duration-1000 ease-out"
+                          style={{ width: `${skill.level}%` }}
+                        />
+                      </div>
                     </div>
-                    <div className="h-1.5 bg-white/5 rounded-full overflow-hidden">
-                      <div
-                        className="h-full bg-gradient-to-r from-primary to-cyan-400 rounded-full transition-all duration-1000 ease-out"
-                        style={{ width: `${skill.level}%` }}
-                      />
-                    </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
-            </GlowBorderCard>
+            </FadeContent>
           ))}
         </div>
       </div>

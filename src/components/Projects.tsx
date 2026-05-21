@@ -1,189 +1,177 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { FiExternalLink, FiGithub, FiStar, FiGitBranch, FiSearch, FiChevronDown } from "react-icons/fi"
+import { FiGithub, FiStar, FiGitBranch } from "react-icons/fi"
+import SpotlightCard from "@/components/ui/SpotlightCard"
 import { getRepos, Repo } from "@/data/repos"
-import { GlowBorderCard } from "@/components/ui/glow-border-card"
-import { AnimatedButton } from "@/components/ui/animated-button"
-import { cn } from "@/lib/utils"
 
-const LANG_COLORS: Record<string, string> = {
-  JavaScript: "bg-yellow-400",
-  TypeScript: "bg-blue-500",
-  Python: "bg-green-500",
-  Shell: "bg-gray-400",
-  HCL: "bg-purple-500",
-  HTML: "bg-orange-500",
-  CSS: "bg-pink-500",
-  Java: "bg-red-500",
-  Go: "bg-cyan-500",
-  Rust: "bg-amber-600",
-}
+const PROJECT_OVERRIDES = [
+  {
+    name: "AIOps Log Analyzer",
+    description: "AI-powered log analysis platform using Ollama LLMs to detect anomalies, predict failures, and auto-remediate incidents in real-time.",
+    tags: ["Python", "Ollama", "Kubernetes", "Prometheus", "Grafana"],
+    github: "https://github.com/DivyalPadalkar/aiops-log-analyzer",
+    badge: "AI + DevOps",
+    badgeColor: "bg-purple-100 text-purple-700",
+    matchName: "aiops-log-analyzer",
+  },
+  {
+    name: "Chatbot UI",
+    description: "Production-ready conversational AI interface with streaming responses, session management, and deployment via Docker + Kubernetes.",
+    tags: ["React", "TypeScript", "Docker", "K8s", "FastAPI"],
+    github: "https://github.com/DivyalPadalkar/chatbot-ui",
+    badge: "Full Stack",
+    badgeColor: "bg-blue-100 text-blue-700",
+    matchName: "chatbot-ui",
+  },
+  {
+    name: "Ecommerce Microservices",
+    description: "Cloud-native ecommerce platform with 5+ microservices, ArgoCD GitOps deployment, service mesh, and distributed tracing on AWS EKS.",
+    tags: ["Go", "Docker", "Kubernetes", "ArgoCD", "AWS EKS"],
+    github: "https://github.com/DivyalPadalkar/ecommerce-microservices",
+    badge: "Cloud Native",
+    badgeColor: "bg-teal-100 text-teal-700",
+    matchName: "ecommerce-microservices",
+  },
+  {
+    name: "Self-Healing CI/CD Pipeline",
+    description: "Intelligent pipeline that detects build failures, auto-rollbacks via ArgoCD, sends Slack alerts, and re-triggers jobs using Jenkins + Terraform.",
+    tags: ["Jenkins", "Terraform", "ArgoCD", "GitHub Actions", "Ansible"],
+    github: "https://github.com/DivyalPadalkar/self-healing-cicd-pipeline",
+    badge: "DevSecOps",
+    badgeColor: "bg-orange-100 text-orange-700",
+    matchName: "self-healing-cicd-pipeline",
+  },
+]
 
-function getLangColor(lang: string | null): string {
-  return LANG_COLORS[lang || ""] || "bg-slate-500"
+interface ProjectCard {
+  name: string
+  description: string
+  tags: string[]
+  github: string
+  badge: string
+  badgeColor: string
+  stars?: number
+  forks?: number
 }
 
 export default function Projects() {
   const [repos, setRepos] = useState<Repo[]>([])
-  const [filter, setFilter] = useState("")
-  const [selectedLang, setSelectedLang] = useState<string>("all")
-  const [expanded, setExpanded] = useState<number | null>(null)
+  const [projects, setProjects] = useState<ProjectCard[]>([])
 
   useEffect(() => {
-    getRepos().then(setRepos)
+    getRepos().then((data) => {
+      setRepos(data)
+    })
   }, [])
 
-  const languages = Array.from(new Set(repos.map((r) => r.language).filter(Boolean))) as string[]
+  useEffect(() => {
+    if (repos.length === 0) {
+      setProjects(PROJECT_OVERRIDES.map(p => ({
+        name: p.name,
+        description: p.description,
+        tags: p.tags,
+        github: p.github,
+        badge: p.badge,
+        badgeColor: p.badgeColor,
+      })))
+      return
+    }
 
-  const filtered = repos.filter((r) => {
-    const matchSearch =
-      r.name.toLowerCase().includes(filter.toLowerCase()) ||
-      (r.description?.toLowerCase() || "").includes(filter.toLowerCase())
-    const matchLang = selectedLang === "all" || r.language === selectedLang
-    return matchSearch && matchLang
-  })
+    const merged = PROJECT_OVERRIDES.map((override) => {
+      const matched = repos.find((r) =>
+        r.name.toLowerCase().includes(override.matchName.toLowerCase())
+      )
+      return {
+        name: override.name,
+        description: override.description,
+        tags: override.tags,
+        github: matched?.html_url || override.github,
+        badge: override.badge,
+        badgeColor: override.badgeColor,
+        stars: matched?.stargazers_count,
+        forks: matched?.forks_count,
+      }
+    })
+
+    setProjects(merged)
+  }, [repos])
 
   return (
-    <section id="projects" className="py-20 px-4">
+    <section id="projects" className="py-20 px-4 bg-[#F0F7F7]">
       <div className="max-w-6xl mx-auto">
-        <h2 className="text-3xl md:text-4xl font-bold text-light mb-2">
-          <span className="text-primary font-mono">&gt;</span> Projects
+        <h2 className="text-3xl md:text-4xl font-display font-bold text-[#1A1A1A] mb-2">
+          Featured Projects
         </h2>
-        <p className="text-slate mb-10">
+        <div className="w-20 h-1 bg-[#01696F] rounded mb-4" />
+        <p className="text-[#6B7280] mb-10">
           Live from{" "}
           <a
             href="https://github.com/divyal27"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-primary hover:underline"
+            className="text-[#01696F] hover:underline"
           >
             github.com/divyal27
           </a>
         </p>
 
-        <div className="flex flex-col md:flex-row gap-4 mb-8">
-          <div className="relative flex-1">
-            <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-slate" />
-            <input
-              type="text"
-              placeholder="Search projects..."
-              value={filter}
-              onChange={(e) => setFilter(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 bg-white/5 border border-white/10 rounded-lg text-light placeholder-slate focus:outline-none focus:border-primary/50 transition-colors"
-            />
-          </div>
-          <div className="flex gap-2 flex-wrap">
-            <AnimatedButton
-              as="button"
-              variant={selectedLang === "all" ? "primary" : "ghost"}
-              size="sm"
-              onClick={() => setSelectedLang("all")}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {projects.map((project) => (
+            <SpotlightCard
+              key={project.name}
+              spotlightColor="rgba(1, 105, 111, 0.15)"
+              className="p-6 flex flex-col"
             >
-              All
-            </AnimatedButton>
-            {languages.map((lang) => (
-              <AnimatedButton
-                key={lang}
-                as="button"
-                variant={selectedLang === lang ? "primary" : "ghost"}
-                size="sm"
-                onClick={() => setSelectedLang(lang)}
-              >
-                {lang}
-              </AnimatedButton>
-            ))}
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {filtered.map((repo) => (
-            <GlowBorderCard
-              key={repo.id}
-              className="p-5 flex flex-col cursor-pointer"
-              onClick={() => window.open(repo.html_url, "_blank", "noopener noreferrer")}
-            >
-              <div className="flex items-start justify-between mb-3">
-                <div className="flex items-center gap-2">
-                  <div className={cn("w-3 h-3 rounded-full", getLangColor(repo.language))} />
-                  <span className="text-xs text-slate font-mono">{repo.language || "N/A"}</span>
-                </div>
-                <div className="flex gap-2">
-                  <a
-                    href={repo.html_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={(e) => e.stopPropagation()}
-                    className="text-slate hover:text-primary transition-colors"
-                    aria-label="View source"
-                  >
-                    <FiGithub size={16} />
-                  </a>
-                  {repo.homepage && (
-                    <a
-                      href={repo.homepage}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      onClick={(e) => e.stopPropagation()}
-                      className="text-slate hover:text-primary transition-colors"
-                      aria-label="View live demo"
-                    >
-                      <FiExternalLink size={16} />
-                    </a>
-                  )}
-                </div>
+              <div className="flex justify-between items-start mb-3">
+                <h3 className="text-lg font-semibold text-[#1A1A1A] font-display">
+                  {project.name}
+                </h3>
+                <span className={`px-2 py-0.5 text-[10px] font-medium rounded-full ${project.badgeColor}`}>
+                  {project.badge}
+                </span>
               </div>
 
-              <h3 className="text-lg font-semibold text-light mb-2 font-mono group-hover:text-primary transition-colors">
-                {repo.name}
-              </h3>
-
-              <p className="text-sm text-slate leading-relaxed flex-1 mb-3 line-clamp-3">
-                {repo.description}
+              <p className="text-sm text-[#6B7280] leading-relaxed flex-1 mb-4">
+                {project.description}
               </p>
 
-              <div className="flex flex-wrap gap-1.5 mb-3">
-                {repo.topics.slice(0, expanded === repo.id ? repo.topics.length : 3).map((topic) => (
+              <div className="flex flex-wrap gap-1.5 mb-4">
+                {project.tags.map((tag) => (
                   <span
-                    key={topic}
-                    className="px-2 py-0.5 bg-primary/10 text-primary text-[10px] rounded-full font-mono"
+                    key={tag}
+                    className="px-2 py-0.5 bg-teal-50 text-[#01696F] text-[10px] rounded-full font-mono"
                   >
-                    {topic}
+                    {tag}
                   </span>
                 ))}
-                {repo.topics.length > 3 && (
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      setExpanded(expanded === repo.id ? null : repo.id)
-                    }}
-                    className="flex items-center gap-0.5 text-[10px] text-slate font-mono hover:text-primary transition-colors"
-                  >
-                    {expanded === repo.id ? "less" : `+${repo.topics.length - 3}`}
-                    <FiChevronDown
-                      size={10}
-                      className={cn("transition-transform", expanded === repo.id && "rotate-180")}
-                    />
-                  </button>
-                )}
               </div>
 
-              <div className="flex items-center gap-4 text-xs text-slate mt-auto pt-3 border-t border-white/5">
-                <span className="flex items-center gap-1">
-                  <FiStar size={12} /> {repo.stargazers_count}
-                </span>
-                <span className="flex items-center gap-1">
-                  <FiGitBranch size={12} /> {repo.forks_count}
-                </span>
-                <span className="font-mono">{repo.updated_at?.slice(0, 10)}</span>
+              <div className="flex items-center justify-between mt-auto pt-3 border-t border-black/8">
+                <div className="flex items-center gap-4 text-xs text-[#6B7280]">
+                  {project.stars !== undefined && (
+                    <span className="flex items-center gap-1">
+                      <FiStar size={12} /> {project.stars}
+                    </span>
+                  )}
+                  {project.forks !== undefined && (
+                    <span className="flex items-center gap-1">
+                      <FiGitBranch size={12} /> {project.forks}
+                    </span>
+                  )}
+                </div>
+                <a
+                  href={project.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-1.5 text-xs text-[#01696F] hover:text-[#0C4E54] font-medium transition-colors"
+                >
+                  <FiGithub size={14} /> View on GitHub
+                </a>
               </div>
-            </GlowBorderCard>
+            </SpotlightCard>
           ))}
         </div>
-
-        {filtered.length === 0 && (
-          <p className="text-center text-slate py-10">No projects match your filter.</p>
-        )}
       </div>
     </section>
   )

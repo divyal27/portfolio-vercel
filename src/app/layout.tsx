@@ -1,8 +1,7 @@
 import type { Metadata } from "next"
-import { Inter, JetBrains_Mono } from "next/font/google"
+import { JetBrains_Mono } from "next/font/google"
 import "./globals.css"
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter" })
 const mono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-mono" })
 
 export const metadata: Metadata = {
@@ -24,7 +23,14 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="scroll-smooth">
-      <body className={`${inter.variable} ${mono.variable} font-sans`}>
+      <head>
+        <link rel="preconnect" href="https://api.fontshare.com" />
+        <link
+          rel="stylesheet"
+          href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700&f[]=cabinet-grotesk@700,800&display=swap"
+        />
+      </head>
+      <body className={`${mono.variable} font-body`}>
         {children}
       </body>
     </html>

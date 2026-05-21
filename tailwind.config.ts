@@ -10,30 +10,31 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        primary: "#00F5D4",
-        secondary: "#0A192F",
-        dark: "#020C1B",
-        light: "#CCD6F6",
-        slate: "#8892B0",
+        primary: "#01696F",
+        "primary-hover": "#0C4E54",
+        surface: "#FFFFFF",
+        background: "#F7F6F2",
+        text: "#1A1A1A",
+        "text-muted": "#6B7280",
+      },
+      fontFamily: {
+        display: ["Cabinet Grotesk", "sans-serif"],
+        body: ["Satoshi", "sans-serif"],
+        mono: ["JetBrains Mono", "monospace"],
       },
       animation: {
+        marquee: "marquee 30s linear infinite",
         float: "float 6s ease-in-out infinite",
-        glow: "glow 2s ease-in-out infinite alternate",
         "spin-slow": "spin 8s linear infinite",
-        "pulse-glow": "pulseGlow 2s ease-in-out infinite alternate",
       },
       keyframes: {
+        marquee: {
+          "0%": { transform: "translateX(0)" },
+          "100%": { transform: "translateX(-50%)" },
+        },
         float: {
           "0%, 100%": { transform: "translateY(0px)" },
           "50%": { transform: "translateY(-20px)" },
-        },
-        glow: {
-          "0%": { boxShadow: "0 0 5px rgba(0,245,212,0.2)" },
-          "100%": { boxShadow: "0 0 30px rgba(0,245,212,0.6)" },
-        },
-        pulseGlow: {
-          "0%": { boxShadow: "0 0 10px rgba(0,245,212,0.2), 0 0 20px rgba(0,245,212,0.1)" },
-          "100%": { boxShadow: "0 0 20px rgba(0,245,212,0.4), 0 0 40px rgba(0,245,212,0.2)" },
         },
       },
     },
