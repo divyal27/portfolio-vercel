@@ -161,8 +161,7 @@ const FALLBACK_REPOS: Repo[] = [
 export async function getRepos(): Promise<Repo[]> {
   try {
     const res = await fetch(
-      "https://api.github.com/users/divyal27/repos?sort=updated&per_page=50",
-      { next: { revalidate: 3600 } }
+      "https://api.github.com/users/divyal27/repos?sort=updated&per_page=50"
     )
     if (!res.ok) return FALLBACK_REPOS
     const data = await res.json()
