@@ -33,7 +33,7 @@ export default function Hero() {
         >
           <div className="relative w-28 h-28 md:w-36 md:h-36 rounded-full overflow-hidden border-2 border-[#01696F]/30 ring-2 ring-[#01696F]/10">
             <Image
-              src="https://media.licdn.com/dms/image/v2/D4D03AQEiYqRY6WsUFA/profile-displayphoto-scale_400_400/B4DZ189pDVJQAk-/0/1775918028775?e=1781136000&v=beta&t=9FpaMSKZxMBAQmDL_E030lz-nsMsaI4R9HYE3_2bUPE"
+              src="/images/profile.jpg"
               alt="Divyal Padalkar"
               fill
               className="object-cover rounded-full"
